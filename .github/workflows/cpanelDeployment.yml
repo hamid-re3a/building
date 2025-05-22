@@ -1,0 +1,41 @@
+name: Publish Website to CPanel
+on:
+  push:
+    branches:
+      - main
+jobs:
+  FTP-Deploy-Action:
+    name: FTP-Deploy-Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.1.0
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install PHP and Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: 'composer'
+
+      - name: Install PHP dependencies
+        run: composer install --optimize-autoloader
+
+      - name: Create ZIP File
+        run: |
+          mkdir deployment
+          zip -r deployment/deployment.zip . -x "storage/logs/*"  -x ".git/*"  -x "User/storage/*"
+
+      - name: Upload ZIP File
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: deployment/
+          server-dir: /deployment-blog/
