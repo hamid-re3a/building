@@ -168,7 +168,13 @@
                             @php
                                 $date = $today->copy()->addDays($i)->format('Y-m-d');
                                 $dayNames = [ 'یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'];
-                                $label = $dayNames[$today->copy()->addDays($i)->dayOfWeek];
+                                if($i == 0 ){
+                                    $label = 'امروز';
+                                } else if( $i == 1) {
+                                    $label = 'فردا';
+                                } else {
+                                    $label = $dayNames[$today->copy()->addDays($i)->dayOfWeek];
+                                }
 //                                $label = $today->copy()->addDays($i)->format('Y/m/d');
                                 $reserved = $reservations[$date][$spot] ?? null;
                             @endphp
