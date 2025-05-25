@@ -167,7 +167,7 @@
                         @for ($i = 0; $i < 7; $i++)
                             @php
                                 $date = $today->copy()->addDays($i)->format('Y-m-d');
-                                $dayNames = ['شنبه', 'یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه'];
+                                $dayNames = [ 'یک‌شنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه', 'پنج‌شنبه', 'جمعه','شنبه'];
                                 $label = $dayNames[$today->copy()->addDays($i)->dayOfWeek];
 //                                $label = $today->copy()->addDays($i)->format('Y/m/d');
                                 $reserved = $reservations[$date][$spot] ?? null;
