@@ -60,6 +60,19 @@ class Unit extends Model implements \Bavix\Wallet\Interfaces\Wallet
             return abs($debt);
     }
 
+
+
+    public function getParkingDebtAttribute()
+    {
+        $allWaterBillsAmount = $this->invoices()->where('type','parking')->sum('amount');
+        $allWaterBillsPaidAmount = $this->invoices()->where('type','parking')->sum('paid_amount');
+        $debt =(int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
+        if($debt > 0) {
+            return 0;
+        } else
+            return abs($debt);
+    }
+
     public function scopeIsResident($query)
     {
         return $query->where('is_resident',true);
@@ -68,7 +81,7 @@ class Unit extends Model implements \Bavix\Wallet\Interfaces\Wallet
 
     public function payAllInvoices()
     {
-        foreach(['water','charge'] as $type){
+        foreach(['water','charge','parking'] as $type){
             $this->payInvoiceType($type);
         }
     }

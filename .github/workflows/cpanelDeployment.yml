@@ -33,7 +33,7 @@ jobs:
       - name: Create ZIP File
         run: |
           mkdir deployment
-          zip -r deployment/deployment.zip . -x "storage/logs/*"  -x ".git/*"  -x "User/storage/*"
+          zip -r deployment/deployment.zip . -x "storage/logs/*" -x "vendor/*" -x ".git/*" -x "node_modules/*" -x "User/storage/*"
 
       - name: Upload ZIP File
         uses: SamKirkland/FTP-Deploy-Action@4.3.3

@@ -10,6 +10,9 @@ Route::get('/command', [CommandController::class, 'runCommand'])->name('command.
 Route::post('/command', [CommandController::class, 'runCommand'])->name('command.run');
 Route::post('/wallet/deposit', [BuildingController::class, 'deposit'])->name('wallet.deposit')->middleware('auth');
 Route::post('/create/invoice', [BuildingController::class, 'invoice'])->name('create.invoice')->middleware('auth');
+Route::post('/parking/reserve', [BuildingController::class, 'reserveParking'])->name('parking.reserve');
+Route::delete('/parking/{reservation}/cancel', [BuildingController::class, 'cancelParking'])->name('parking.cancel');
+
 //
 //
 Route::get('/dashboard', function () {
