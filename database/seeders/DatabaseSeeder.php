@@ -20,8 +20,8 @@ class DatabaseSeeder extends Seeder
 
 
 //        // User::factory(10)->create();
-//        foreach (Unit::query()->isResident()->get() as $unit){
-        $unit = Unit::find(24);
+        foreach (Unit::query()->isResident()->get() as $unit){
+//        $unit = Unit::find(24);
 //            if($unit->water_debt > 0) {
 //                $amount = toPersianNumber($unit->charge_debt);
                 $amount = $unit->password;
@@ -81,7 +81,7 @@ EOT;
 //EOT;
 //
                 sendWhatsappMsg($unit->owner_number,$string);
-//            }
+            }
 //        }
 
 

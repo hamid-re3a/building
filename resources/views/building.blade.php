@@ -268,7 +268,7 @@
 
         <div id="passwordModal" style="display:none; position:fixed; inset:0; background:#00000088; z-index:1000;">
             <div style="background:white; padding:1rem; border-radius:10px; max-width:300px; margin:10% auto; text-align:center;">
-                <h3 style="margin-bottom: 1rem;">پسورد واحد <span id="unitNameInModal"></span> را وارد کنید:</h3>
+                <h3 style="margin-bottom: 1rem;">پسورد <span id="unitNameInModal"></span> را وارد کنید:</h3>
                 <input type="text" id="unitPasswordInput" style="width: 100%; margin-bottom: 1rem;" placeholder="پسورد">
                 <br>
                 <button onclick="submitUnitPassword()" style="margin-left: 0.5rem;">تأیید</button>
@@ -321,6 +321,7 @@
 
                 form.appendChild(csrf);
                 form.appendChild(inputDate);
+                form.appendChild(inputPassword);
                 form.appendChild(inputSpot);
                 form.appendChild(inputUnit);
 
