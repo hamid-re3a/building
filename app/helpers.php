@@ -28,7 +28,7 @@ if (!function_exists('sendWhatsappMsg')) {
     function sendWhatsappMsg($number,$string)
     {
         $params = array(
-            'token' => 'gwdmryxr9etg69t1',
+            'token' => 'gwdmryxr9etg69t1444ggg',
             'to' => $number,
             'body' =>$string
         );

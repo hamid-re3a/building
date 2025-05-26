@@ -41,9 +41,13 @@ class BuildingController extends Controller
             'spot' => 'required',
             'unit_id' => 'required',
             'date' => 'required',
+            'password' => 'required',
         ]);
 
         $unit = Unit::find($request->unit_id);
+        if($request->password != $unit->password){
+            return redirect('/')->with('error', 'رمز اشتباه است.');
+        }
         DB::beginTransaction();
         try{
             $invoice = UnitInvoice::create([

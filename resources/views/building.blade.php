@@ -265,48 +265,69 @@
             <button onclick="closeUnitModal()">بستن</button>
         </div>
     </div>
-</div>
+
+        <div id="passwordModal" style="display:none; position:fixed; inset:0; background:#00000088; z-index:1000;">
+            <div style="background:white; padding:1rem; border-radius:10px; max-width:300px; margin:10% auto; text-align:center;">
+                <h3 style="margin-bottom: 1rem;">پسورد واحد <span id="unitNameInModal"></span> را وارد کنید:</h3>
+                <input type="text" id="unitPasswordInput" style="width: 100%; margin-bottom: 1rem;" placeholder="پسورد">
+                <br>
+                <button onclick="submitUnitPassword()" style="margin-left: 0.5rem;">تأیید</button>
+                <button onclick="closePasswordModal()">بستن</button>
+            </div>
+        </div>
+
+    </div>
 <script>
     const unitsList = @json($allUnits);
     function reserveParking(date, spot) {
         showUnitSelect(function(unit) {
-            // حالا اینجا واحد انتخاب شده رو داری:
-            if (!unit) return;
-            console.log('انتخاب شد:', unit.name, unit.id);
 
-            // ادامه رزرو با unit.id یا unit.name
-            // مثلاً:
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = '<?php echo e(route('parking.reserve')); ?>';
+            showPasswordModal(unit, (password, unit) => {
+                // حالا اینجا واحد انتخاب شده رو داری:
+                if (!unit) return;
+                console.log('انتخاب شد:', unit.name, unit.id);
 
-            const csrf = document.createElement('input');
-            csrf.type = 'hidden';
-            csrf.name = '_token';
-            csrf.value = '<?php echo e(csrf_token()); ?>';
+                // ادامه رزرو با unit.id یا unit.name
+                // مثلاً:
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '<?php echo e(route('parking.reserve')); ?>';
 
-            const inputDate = document.createElement('input');
-            inputDate.type = 'hidden';
-            inputDate.name = 'date';
-            inputDate.value = date;
+                const csrf = document.createElement('input');
+                csrf.type = 'hidden';
+                csrf.name = '_token';
+                csrf.value = '<?php echo e(csrf_token()); ?>';
 
-            const inputSpot = document.createElement('input');
-            inputSpot.type = 'hidden';
-            inputSpot.name = 'spot';
-            inputSpot.value = spot;
+                const inputDate = document.createElement('input');
+                inputDate.type = 'hidden';
+                inputDate.name = 'date';
+                inputDate.value = date;
 
-            const inputUnit = document.createElement('input');
-            inputUnit.type = 'hidden';
-            inputUnit.name = 'unit_id';
-            inputUnit.value = unit.id;
+                const inputSpot = document.createElement('input');
+                inputSpot.type = 'hidden';
+                inputSpot.name = 'spot';
+                inputSpot.value = spot;
 
-            form.appendChild(csrf);
-            form.appendChild(inputDate);
-            form.appendChild(inputSpot);
-            form.appendChild(inputUnit);
 
-            document.body.appendChild(form);
-            form.submit();
+                const inputPassword = document.createElement('input');
+                inputPassword.type = 'hidden';
+                inputPassword.name = 'password';
+                inputPassword.value = password;
+
+                const inputUnit = document.createElement('input');
+                inputUnit.type = 'hidden';
+                inputUnit.name = 'unit_id';
+                inputUnit.value = unit.id;
+
+                form.appendChild(csrf);
+                form.appendChild(inputDate);
+                form.appendChild(inputSpot);
+                form.appendChild(inputUnit);
+
+                document.body.appendChild(form);
+                form.submit();
+
+            });
         });
 
 
@@ -343,11 +364,37 @@
         onUnitSelectedCallback = callback;
         modal.style.display = 'block';
     }
-
-
-
     function closeUnitModal() {
         document.getElementById('unitSelectModal').style.display = 'none';
+    }
+
+    let selectedUnit = null;
+    let onPasswordSubmitCallback = null;
+
+    function showPasswordModal(unit, callback) {
+        selectedUnit = unit;
+        onPasswordSubmitCallback = callback;
+        document.getElementById('unitNameInModal').innerText = unit.name;
+        document.getElementById('unitPasswordInput').value = '';
+        document.getElementById('passwordModal').style.display = 'block';
+    }
+
+    function closePasswordModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+    }
+
+    function submitUnitPassword() {
+        const password = document.getElementById('unitPasswordInput').value;
+        if (!password) {
+            alert('لطفا پسورد را وارد کنید.');
+            return;
+        }
+
+        // ارسال به سرور یا استفاده محلی از پسورد
+        closePasswordModal();
+        if (onPasswordSubmitCallback) {
+            onPasswordSubmitCallback(password, selectedUnit);
+        }
     }
 </script>
 </body>
