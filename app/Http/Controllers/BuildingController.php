@@ -102,9 +102,42 @@ class BuildingController extends Controller
             'amount' => 'required',
             'unit_id' => 'required',
             'type' => 'required',
+            'spot' => 'nullable',
+            'from_date' => 'required_if:type,parking|date',
+            'to_date' => 'required_if:type,parking|date|after:from_date',
         ]);
 
-        if($request->unit_id = 'building'){
+
+        if($request->type = 'parking'){
+
+            $amount = abs($request->amount);
+            $from_date = Carbon::create($request->from_date);
+            $to_date = Carbon::create($request->to_date);
+
+            $per_day_amount = $amount / ($from_date->diffInDays($to_date) +1);
+
+
+
+            while($from_date->isBefore($to_date) || $from_date->isSameDay($to_date)){
+                $invoice = UnitInvoice::create([
+                    'unit_id' => $request->unit_id,
+                    'type' => 'parking',
+                    'name' => 'رزرو پارکینگ ' . $from_date,
+                    'amount' => $per_day_amount,
+                ]);
+
+                ParkingReservation::create([
+                    'unit_id' => $request->unit_id,
+                    'unit_invoice_id' => $invoice->id,
+                    'reserved_date' => $from_date,
+                    'slot_number' => $request->spot,
+                ]);
+
+                $from_date->addDay();
+            }
+
+
+        } else if($request->unit_id = 'building'){
             UnitInvoice::create([
                 'type' => $request->type,
                 'name' => $request->name,
@@ -118,7 +151,7 @@ class BuildingController extends Controller
 //
 //        $unit->payInvoiceType($request->type);
 //
-        return redirect('/');
+        return redirect('/')->with('success', 'رزرو با موفقیت حذف شد.');
     }
 
     /**

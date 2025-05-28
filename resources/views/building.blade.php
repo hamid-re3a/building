@@ -122,6 +122,7 @@
                     <option value="charge">شارژ</option>
                     <option value="water">آب</option>
                     <option value="elevator">آسانسو</option>
+                    <option value="parking">پارکینگ ماهانه</option>
                     <option value="other">متفرقه</option>
                 </select>
 
@@ -133,6 +134,9 @@
                     @endforeach
 
                 </select>
+                <input type="date" name="from_date" placeholder="از تاریخ" style="width: 70px;">
+                <input type="date" name="to_date" placeholder="تا تاریخ" style="width: 70px;">
+                <input type="text" name="spot" placeholder="عدد جا" style="width: 70px;">
                 <input type="text" name="name" placeholder="اسم قبض" style="width: 70px;">
                 <input type="number" name="amount" placeholder="مبلغ" style="width: 70px;">
                 <button type="submit">افزودن</button>
@@ -162,7 +166,12 @@
 
             @for ($spot = 1; $spot <= 2; $spot++)
                 <div style="margin: 1rem 0;">
-                    <strong>جای پارک {{ $spot }} @if ( $spot == 1) (وسط پارکینگ پایین) @endif @if ( $spot == 2) (انتهای پارکینگ پایین)  @endif</strong>
+                    <strong>جای پارک {{ $spot }}
+                        @if ( $spot == 1) (وسط پارکینگ پایین) @endif
+                        @if ( $spot == 2) (انتهای پارکینگ پایین)  @endif
+                        @if ( $spot == 3) (واحد ۱۴)  @endif
+                        @if ( $spot == 4) ( واحد ۱۹)  @endif
+                    </strong>
                     <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
                         @for ($i = 0; $i < 7; $i++)
                             @php
