@@ -103,12 +103,12 @@ class BuildingController extends Controller
             'unit_id' => 'required',
             'type' => 'required',
             'spot' => 'nullable',
-            'from_date' => 'required_if:type,parking|date',
-            'to_date' => 'required_if:type,parking|date|after:from_date',
+            'from_date' => 'required_if:type,parking|nullable|date',
+            'to_date' => 'required_if:type,parking|nullable|date|after:from_date',
         ]);
 
 
-        if($request->type = 'parking'){
+        if($request->type == 'parking'){
 
             $amount = abs($request->amount);
             $from_date = Carbon::create($request->from_date);
@@ -137,13 +137,23 @@ class BuildingController extends Controller
             }
 
 
-        } else if($request->unit_id = 'building'){
+        } else if($request->unit_id == 'building' && $request->type != 'charge'){
             UnitInvoice::create([
                 'type' => $request->type,
                 'name' => $request->name,
                 'amount' => -1 *  abs($request->amount),
                 'paid_amount' => -1 *  abs($request->amount),
             ]);
+        } else if($request->unit_id == 'building' && $request->type == 'charge'){
+                foreach(Unit::query()->isResident()->get() as $u) {
+                    $per_unit = $request->amount;
+                    UnitInvoice::create([
+                        'unit_id' => $u->id,
+                        'type' => 'charge',
+                        'name' => $request->name,
+                        'amount' => $per_unit,
+                    ]);
+                }
         }
 //        $unit = Unit::find($request->unit_id);
 //        $wallet = $unit->getUnitWallet($request->type);
