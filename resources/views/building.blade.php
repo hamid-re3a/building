@@ -165,7 +165,7 @@
                 $today = Carbon::today();
             @endphp
 
-            @for ($spot = 1; $spot <= 2; $spot++)
+            @for ($spot = 1; $spot <= 4; $spot++)
                 <div style="margin: 1rem 0;">
                     <strong>جای پارک {{ $spot }}
                         @if ( $spot == 1) (وسط پارکینگ پایین) @endif
