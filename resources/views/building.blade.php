@@ -225,6 +225,18 @@
             @endphp
             <div class="unit {{ $class }}">
                 <h3>{{ $unit->name }} - {{ $unit->owner_name }}</h3>
+                 <p>
+                    قبض برق: {{ toPersianNumber($unit->electricity_debt ?? 0) }} تومان
+                @if(auth()->check() && auth()->id() == 1)
+                    <form method="POST" action="{{ route('wallet.deposit') }}" style="display:inline;">
+                        @csrf
+                        <input type="hidden" name="unit_id" value="{{ $unit->id }}">
+                        <input type="hidden" name="type" value="electricity">
+                        <input type="number" name="amount" placeholder="مبلغ" style="width: 70px;">
+                        <button type="submit">افزودن</button>
+                    </form>
+                    @endif
+                </p>
                 <p>
                     قبض آب: {{ toPersianNumber($unit->water_debt ?? 0) }} تومان
                 @if(auth()->check() && auth()->id() == 1)

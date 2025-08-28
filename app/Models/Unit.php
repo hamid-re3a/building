@@ -19,13 +19,24 @@ class Unit extends Model implements \Bavix\Wallet\Interfaces\Wallet
 
     public function getWaterDebtAttribute()
     {
-        $allWaterBillsAmount = $this->invoices()->where('type','water')->sum('amount');
-        $allWaterBillsPaidAmount = $this->invoices()->where('type','water')->sum('paid_amount');
-        $debt =(int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
-        if($debt > 0) {
+        $allWaterBillsAmount = $this->invoices()->where('type', 'water')->sum('amount');
+        $allWaterBillsPaidAmount = $this->invoices()->where('type', 'water')->sum('paid_amount');
+        $debt = (int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
+        if ($debt > 0) {
             return 0;
         } else
-        return abs($debt);
+            return abs($debt);
+    }
+
+    public function getElectricityDebtAttribute()
+    {
+        $allWaterBillsAmount = $this->invoices()->where('type', 'electricity')->sum('amount');
+        $allWaterBillsPaidAmount = $this->invoices()->where('type', 'electricity')->sum('paid_amount');
+        $debt = (int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
+        if ($debt > 0) {
+            return 0;
+        } else
+            return abs($debt);
     }
 
     public function getUnitWallet($wallet_name)
@@ -40,21 +51,20 @@ class Unit extends Model implements \Bavix\Wallet\Interfaces\Wallet
             ]);
         }
         return $wallet;
-
     }
 
     public function unitBalance()
     {
-        return $this->getUnitWallet('charge')->balance +$this->getUnitWallet('water')->balance;
+        return $this->getUnitWallet('charge')->balance + $this->getUnitWallet('water')->balance;
     }
 
 
     public function getChargeDebtAttribute()
     {
-        $allWaterBillsAmount = $this->invoices()->where('type','charge')->sum('amount');
-        $allWaterBillsPaidAmount = $this->invoices()->where('type','charge')->sum('paid_amount');
-        $debt =(int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
-        if($debt > 0) {
+        $allWaterBillsAmount = $this->invoices()->where('type', 'charge')->sum('amount');
+        $allWaterBillsPaidAmount = $this->invoices()->where('type', 'charge')->sum('paid_amount');
+        $debt = (int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
+        if ($debt > 0) {
             return 0;
         } else
             return abs($debt);
@@ -64,10 +74,10 @@ class Unit extends Model implements \Bavix\Wallet\Interfaces\Wallet
 
     public function getParkingDebtAttribute()
     {
-        $allWaterBillsAmount = $this->invoices()->where('type','parking')->sum('amount');
-        $allWaterBillsPaidAmount = $this->invoices()->where('type','parking')->sum('paid_amount');
-        $debt =(int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
-        if($debt > 0) {
+        $allWaterBillsAmount = $this->invoices()->where('type', 'parking')->sum('amount');
+        $allWaterBillsPaidAmount = $this->invoices()->where('type', 'parking')->sum('paid_amount');
+        $debt = (int) ($allWaterBillsPaidAmount - $allWaterBillsAmount);
+        if ($debt > 0) {
             return 0;
         } else
             return abs($debt);
@@ -75,13 +85,13 @@ class Unit extends Model implements \Bavix\Wallet\Interfaces\Wallet
 
     public function scopeIsResident($query)
     {
-        return $query->where('is_resident',true);
+        return $query->where('is_resident', true);
     }
 
 
     public function payAllInvoices()
     {
-        foreach(['water','charge','parking'] as $type){
+        foreach (['water', 'charge', 'parking', 'electricity'] as $type) {
             $this->payInvoiceType($type);
         }
     }
