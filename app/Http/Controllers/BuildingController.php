@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 
@@ -45,11 +46,11 @@ class BuildingController extends Controller
         ]);
 
         $unit = Unit::find($request->unit_id);
-        if($request->password != $unit->password){
+        if ($request->password != $unit->password) {
             return redirect('/')->with('error', 'رمز اشتباه است.');
         }
         DB::beginTransaction();
-        try{
+        try {
             $invoice = UnitInvoice::create([
                 'unit_id' => $unit->id,
                 'type' => 'parking',
@@ -63,10 +64,9 @@ class BuildingController extends Controller
                 'reserved_date' => $request->date,
                 'slot_number' => $request->spot,
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollBack();
             return redirect('/')->with('error', 'عملیات با خطا مواجه شد.');
-
         }
         DB::commit();
 
@@ -84,14 +84,13 @@ class BuildingController extends Controller
         }
 
         DB::beginTransaction();
-        try{
+        try {
             $reservation->unit_invoice()->delete();
             $reservation->delete();
-            } catch(\Exception $e) {
-                DB::rollBack();
-                return redirect('/')->with('error', 'عملیات با خطا مواجه شد.');
-
-            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect('/')->with('error', 'عملیات با خطا مواجه شد.');
+        }
         DB::commit();
         return back()->with('success', 'رزرو با موفقیت حذف شد.');
     }
@@ -108,17 +107,17 @@ class BuildingController extends Controller
         ]);
 
 
-        if($request->type == 'parking'){
+        if ($request->type == 'parking') {
 
             $amount = abs($request->amount);
             $from_date = Carbon::create($request->from_date);
             $to_date = Carbon::create($request->to_date);
 
-            $per_day_amount = $amount / ($from_date->diffInDays($to_date) +1);
+            $per_day_amount = $amount / ($from_date->diffInDays($to_date) + 1);
 
 
 
-            while($from_date->isBefore($to_date) || $from_date->isSameDay($to_date)){
+            while ($from_date->isBefore($to_date) || $from_date->isSameDay($to_date)) {
                 $invoice = UnitInvoice::create([
                     'unit_id' => $request->unit_id,
                     'type' => 'parking',
@@ -135,32 +134,42 @@ class BuildingController extends Controller
 
                 $from_date->addDay();
             }
-
-
-        } else if($request->unit_id == 'building' && $request->type != 'charge'){
+        } else if ($request->unit_id == 'building' && ($request->type == 'water' || $request->type == 'electricity')) {
+            foreach (Unit::query()->isResident()->get() as $u) {
+                $per_unit = abs($request->amount);
+                UnitInvoice::create([
+                    'unit_id' => $u->id,
+                    'type' => $request->type,
+                    'amount' => $u->number_of_residents * $per_unit,
+                    'building_invoice_id' => 1
+                ]);
+                $u->payAllInvoices();
+            }
+        } else if ($request->unit_id == 'building' && $request->type != 'charge') {
             UnitInvoice::create([
                 'type' => $request->type,
                 'name' => $request->name,
                 'amount' => -1 *  abs($request->amount),
                 'paid_amount' => -1 *  abs($request->amount),
             ]);
-        } else if($request->unit_id == 'building' && $request->type == 'charge'){
-                foreach(Unit::query()->isResident()->get() as $u) {
-                    $per_unit = $request->amount;
-                    UnitInvoice::create([
-                        'unit_id' => $u->id,
-                        'type' => 'charge',
-                        'name' => $request->name,
-                        'amount' => $per_unit,
-                    ]);
-                }
+        } else if ($request->unit_id == 'building' && $request->type == 'charge') {
+            foreach (Unit::query()->isResident()->get() as $u) {
+                $per_unit = $request->amount;
+                UnitInvoice::create([
+                    'unit_id' => $u->id,
+                    'type' => 'charge',
+                    'name' => $request->name,
+                    'amount' => $per_unit,
+                ]);
+                $u->payAllInvoices();
+            }
         }
-//        $unit = Unit::find($request->unit_id);
-//        $wallet = $unit->getUnitWallet($request->type);
-//        $wallet->deposit($request->amount);
-//
-//        $unit->payInvoiceType($request->type);
-//
+        //        $unit = Unit::find($request->unit_id);
+        //        $wallet = $unit->getUnitWallet($request->type);
+        //        $wallet->deposit($request->amount);
+        //
+        //        $unit->payInvoiceType($request->type);
+        //
         return redirect('/')->with('success', 'رزرو با موفقیت حذف شد.');
     }
 

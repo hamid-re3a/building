@@ -121,6 +121,7 @@
                 <select name="type">
                     <option value="charge">شارژ</option>
                     <option value="water">آب</option>
+                    <option value="electricity">برق</option>
                     <option value="elevator">آسانسو</option>
                     <option value="parking">پارکینگ ماهانه</option>
                     <option value="other">متفرقه</option>
