@@ -26,21 +26,21 @@ class DatabaseSeeder extends Seeder
 
             if ($unit->electricity_debt > 0) {
                 $amount = toPersianNumber($unit->electricity_debt);
-                $debts += "🔹 قبض برق: {$amount} تومان\n";
+                $debts .= "🔹 قبض برق: {$amount} تومان\n";
             }
 
             if ($unit->water_debt > 0) {
                 $amount = toPersianNumber($unit->water_debt);
-                $debts += "🔹 قبض آب: {$amount} تومان\n";
+                $debts .= "🔹 قبض آب: {$amount} تومان\n";
             }
             if ($unit->charge_debt > 0) {
                 $amount = toPersianNumber($unit->charge_debt);
-                $debts += "🔹 شارژ ساختمان: {$amount} تومان\n";
+                $debts .= "🔹 شارژ ساختمان: {$amount} تومان\n";
             }
 
             if ($unit->parking_debt > 0) {
                 $amount = toPersianNumber($unit->parking_debt);
-                $debts += "🔹 هزینه پارکینگ: {$amount} تومان\n";
+                $debts .= "🔹 هزینه پارکینگ: {$amount} تومان\n";
             }
 
             if (empty($debts))
