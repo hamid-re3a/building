@@ -111,7 +111,10 @@
     <div class="print-button">
         <button onclick="window.print()">🖨️ پرینت</button>
     </div>
-
+     <div class="print-button">
+        <button onclick="window.location.href='/unit-transactions'">ریز تراکنشها</button>
+    </div>
+ 
     <div class="summary">
         <span> مانده صندوق: {{toPersianNumber($allPaidAmount)}}  تومان</span>
 

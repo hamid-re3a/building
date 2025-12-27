@@ -12,6 +12,7 @@ Route::post('/wallet/deposit', [BuildingController::class, 'deposit'])->name('wa
 Route::post('/create/invoice', [BuildingController::class, 'invoice'])->name('create.invoice')->middleware('auth');
 Route::post('/parking/reserve', [BuildingController::class, 'reserveParking'])->name('parking.reserve');
 Route::delete('/parking/{reservation}/cancel', [BuildingController::class, 'cancelParking'])->name('parking.cancel');
+Route::get('/unit-transactions', [BuildingController::class, 'unitTransactions']);
 
 //
 //
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
 });
 
 require __DIR__.'/auth.php';
